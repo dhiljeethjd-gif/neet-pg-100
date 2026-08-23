@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<title>NEET PG 100</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Arial,sans-serif;background:#f3f5f7;color:#111827}.app{max-width:560px;margin:auto;min-height:100vh;padding-bottom:82px}.head{background:#111827;color:white;padding:20px}.head h1{margin:0;font-size:27px}.head p{margin:4px 0 0;color:#cbd5e1;font-size:13px}.content{padding:14px}.screen{display:none}.screen.active{display:block}.card{background:white;border-radius:16px;padding:15px;margin-bottom:12px;box-shadow:0 2px 10px #0000000a}.row{display:flex;justify-content:space-between;align-items:center;gap:8px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.stat{background:#f7f8fa;padding:10px;border-radius:11px}.stat b{display:block;font-size:20px}.muted{font-size:12px;color:#64748b}.big{font-size:30px;font-weight:800}.barbg{height:8px;background:#e5e7eb;border-radius:8px;margin:9px 0;overflow:hidden}.bar{height:100%;background:#111827}.topic{padding:12px 0;border-bottom:1px solid #edf0f3}.actions{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}.btn,button{border:0;border-radius:10px;padding:10px 12px;font-weight:700;font-size:12px;background:#eef2f7;color:#111827}.primary{background:#111827;color:#fff}.ok{background:#dcfce7}.bad{background:#fee2e2}.rev{background:#fef3c7}.blue{background:#dbeafe}.option{display:block;width:100%;text-align:left;margin:8px 0;background:#f8fafc;border:1px solid #e2e8f0}.option.correct{background:#dcfce7;border-color:#16a34a}.option.wrong{background:#fee2e2;border-color:#dc2626}.explain{background:#f8fafc;padding:12px;border-radius:12px;font-size:13px;line-height:1.5;margin-top:10px}.tag{display:inline-block;background:#eef2f7;padding:5px 8px;border-radius:99px;font-size:10px;margin:2px}select,input{width:100%;padding:11px;border:1px solid #d8dee6;border-radius:10px;background:#fff;font-size:14px}.flash{background:#111827;color:white;border-radius:15px;padding:22px;min-height:170px;display:flex;flex-direction:column;justify-content:center}.flash small{color:#cbd5e1}.flash h2{margin:8px 0;font-size:20px}.nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #ddd;display:flex;z-index:10}.nav button{flex:1;background:white;border-radius:0;padding:9px 2px;font-size:10px;color:#64748b}.nav button.active{color:#111827;font-weight:800}.hidden{display:none}.imagebox{background:#f1f5f9;border-radius:12px;padding:15px;text-align:center;margin-top:9px;font-size:12px;color:#475569}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="head"><h1>NEET PG 100</h1><p>Topics • PYQs • Custom modules • Flashcards • Smart revision</p></header>
+
+<main id="home" class="screen active content">
+<div class="card"><div class="row"><div><div class="muted">Topics completed</div><div class="big" id="count">0/100</div></div><button class="primary" onclick="show('topics')">Study</button></div><div class="barbg"><div id="bar" class="bar"></div></div><div class="stats"><div class="stat"><b id="wd">0</b><span class="muted">Weak</span></div><div class="stat"><b id="ww">0</b><span class="muted">Wrong</span></div><div class="stat"><b id="acc">0%</b><span class="muted">MCQ accuracy</span></div></div></div>
+<div class="card"><div class="row"><b>Smart review</b><button class="primary" onclick="startReview()">Review now</button></div><p class="muted" id="reviewInfo">No questions due.</p></div>
+<div class="card"><div class="row"><b>Quick MCQs</b><button class="primary" onclick="startQuiz('mixed')">10 MCQs</button></div><p class="muted">Answer → explanation → next.</p></div>
+</main>
+
+<main id="topics" class="screen content">
+<div class="card"><div class="row"><b>100 Topics</b><button onclick="clearTopics()">Clear all</button></div><p class="muted">Tap the same status again to deselect it.</p></div><div class="card" id="topicList"></div>
+</main>
+
+<main id="pyq" class="screen content">
+<div class="card"><b>PYQ Practice</b><p class="muted">Select a topic first. Only questions tagged to that topic will appear.</p><input id="search" placeholder="Search topic..." oninput="renderTopicsForPyq()"><div id="pyqTopics"></div></div>
+<div class="card"><div class="grid"><select id="year"><option value="mixed">All years</option><option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option><option>2020</option><option>2019</option><option>2018</option><option>2017</option><option>2016</option><option>2015</option></select><select id="num"><option>10</option><option>20</option><option>30</option></select></div><button class="primary" style="width:100%;margin-top:8px" onclick="startYearQuiz()">Solve selected year</button></div>
+</main>
+
+<main id="custom" class="screen content">
+<div class="card"><b>Custom Module</b><p class="muted">Questions are selected from your chosen category.</p><div class="grid"><select id="filter"><option value="weak">Weak topics</option><option value="wrong">Wrong topics</option><option value="rev">Revise topics</option><option value="unfinished">Unfinished topics</option><option value="due">Due wrong questions</option><option value="all">All</option></select><select id="size"><option>10</option><option>20</option><option>30</option></select></div><button class="primary" style="width:100%;margin-top:8px" onclick="customModule()">Generate module</button></div>
+<div id="moduleResult" class="card hidden"></div>
+</main>
+
+<main id="flash" class="screen content">
+<div class="card"><div class="row"><b>Topic Flashcards</b><select id="flashTopic" style="width:55%" onchange="flashIndex=0;renderFlash()"></select></div></div>
+<div id="flashCard" class="flash" onclick="flipFlash()"></div>
+<div class="row" style="margin-top:9px"><button onclick="prevFlash()">← Previous</button><button onclick="nextFlash()">Next →</button></div>
+<div class="card"><p class="muted">Visual aid</p><div id="visual" class="imagebox">Visual aids are shown for topics where a diagram is useful. You can later add your own image to the topic.</div></div>
+</main>
+
+<main id="progress" class="screen content">
+<div class="card"><b>Custom module / MCQ results</b><div class="stats" style="margin-top:10px"><div class="stat"><b id="pa">0</b><span class="muted">Attempted</span></div><div class="stat"><b id="pc">0</b><span class="muted">Correct</span></div><div class="stat"><b id="pacc">0%</b><span class="muted">Accuracy</span></div></div></div>
+<div class="card"><b>Smart revision settings</b><p class="muted">Wrong questions are due after the selected interval. Two consecutive correct attempts remove them from automatic review.</p><label class="muted">Repeat wrong questions after</label><select id="interval" onchange="setIntervalDays()"><option value="2">2 days</option><option value="1">1 day</option><option value="3">3 days</option><option value="7">7 days</option></select><div style="margin-top:10px"><label class="muted">Mastery</label><div class="tag">2 consecutive correct attempts = mastered</div></div></div>
+<div class="card"><b>Login</b><p class="muted">Phone + OTP login needs a real authentication provider (e.g. Firebase). The button below is a setup placeholder and will not send SMS until Firebase credentials are added.</p><button class="primary" onclick="alert('OTP login requires Firebase configuration before SMS can be sent.')">Set up Phone + OTP</button></div>
+</main>
+
+<main id="quiz" class="screen content"><div class="card"><div class="row"><b id="qtitle">MCQ</b><span id="qcount"></span></div><div class="barbg"><div id="qbar" class="bar"></div></div><div id="qbox"></div></div></main>
+
+<nav class="nav"><button id="n-home" onclick="show('home')">🏠<br>Home</button><button id="n-topics" onclick="show('topics')">🎯<br>Topics</button><button id="n-pyq" onclick="show('pyq')">📝<br>PYQ</button><button id="n-custom" onclick="show('custom')">⚡<br>Custom</button><button id="n-flash" onclick="show('flash')">🗂️<br>Cards</button><button id="n-progress" onclick="show('progress')">⚙️<br>Settings</button></nav>
+</div>
+
+<script>
+const topics=["Brachial plexus","Cavernous sinus","Facial nerve","Cardiac cycle","Starling forces","Rate-limiting enzymes","Apoptosis","Shock","Alpha blockers","Adrenergic receptors","Staph aureus","Strep pyogenes","Duke criteria","ECG basics","Acid-base disorders","Breast cancer staging","Shock management","PPH causes","CTG patterns","Neonatal resuscitation","Baumann angle","Brodie abscess","Erythema multiforme","Airway basics","Chest X-ray approach","NTEP","Screening tests","Hearing tests","Glaucoma","Antipsychotic adverse effects","Phenytoin","Carbamazepine","Valproate","Infective endocarditis","Hypertension","Thyroid nodules","Hernia basics","Ectopic pregnancy","Preeclampsia","Developmental milestones","Portal-systemic anastomosis","Renal clearance","Vitamins","Nephrotic syndrome","TB diagnosis","AKI","CKD","Acute abdomen","Cervical cancer","Epidemiological measures","CSOM","Cataract","Psoriasis","Fracture healing","Spinal anesthesia","CT head basics","Depression","Autonomic drugs","Inflammation","HIV basics","Stroke","Seizure drugs","Colorectal cancer","Endometrial cancer","Congenital heart disease","Inguinal canal","Respiratory volumes","Urea cycle","Breast lesions","Hepatitis viruses","COPD","Asthma","Burns","Fibroid uterus","Vaccines","Vertigo","Diabetic retinopathy","STIs","Osteomyelitis","Local anesthetics","Bone lesions","Bipolar disorder","Diuretics","Leukemia","Malaria","Liver failure","Rheumatology antibodies","Pancreatitis","Placenta previa","Immunization","Biostatistics","Cranial nerves","Endocrine axes","Lymphoma","Dengue","Diabetes","Intestinal obstruction","Menstrual disorders","Nerve injuries","Final weak-topic revision"];
+
+const qs=[
+["2025","Brachial plexus","Which nerve supplies the deltoid muscle?",["Axillary nerve","Radial nerve","Musculocutaneous nerve","Suprascapular nerve"],0,"Axillary nerve supplies deltoid and teres minor."],
+["2025","Duke criteria","Which is a major Duke criterion?",["Fever","Positive blood culture with typical organism","Osler nodes","Raised ESR"],1,"Typical positive blood cultures are a major criterion."],
+["2024","Staph aureus","Most common cause of infective endocarditis in IV drug users?",["S. viridans","S. aureus","Enterococcus","S. epidermidis"],1,"S. aureus is the classic/commonest cause in IV drug use."],
+["2024","Phenytoin","Phenytoin primarily blocks which channel?",["Ligand-gated Cl−","Voltage-gated Na+","Voltage-gated Ca2+","K+"],1,"Phenytoin use-dependently blocks voltage-gated Na+ channels."],
+["2023","Breast cancer staging","Which finding makes breast cancer stage IV?",["T3 primary","N2 nodes","Skin involvement","Distant metastasis"],3,"Stage IV is defined by distant metastasis (M1)."],
+["2023","Brodie abscess","Brodie abscess is a form of:",["Acute osteomyelitis","Subacute osteomyelitis","Septic arthritis","Osteosarcoma"],1,"Brodie abscess is localized subacute osteomyelitis."],
+["2022","Baumann angle","Baumann angle is mainly used for:",["Distal radius fracture","Supracondylar fracture humerus","Clavicle fracture","Neck of femur fracture"],1,"It assesses coronal alignment after pediatric supracondylar humerus fracture."],
+["2022","Erythema multiforme","Target lesions are classically associated with:",["Erythema multiforme","Psoriasis","Pemphigus","Urticaria"],0,"Erythema multiforme classically produces target/iris lesions."],
+["2021","Shock","Base deficit is useful as a marker of:",["Oxygenation","Metabolic acidosis/tissue hypoperfusion","Hypernatremia","Respiratory alkalosis"],1,"A rising base deficit reflects metabolic acidosis and supports assessment of hypoperfusion."],
+["2021","Alpha blockers","Which is a selective alpha-1 blocker?",["Prazosin","Phenoxybenzamine","Phentolamine","Clonidine"],0,"Prazosin selectively blocks α1 receptors."],
+["2020","Infective endocarditis","Osler nodes are:",["Vascular phenomena","Immunologic phenomena","Septic emboli","Malignant lesions"],1,"Osler nodes are painful immune phenomena; Janeway lesions are painless vascular lesions."],
+["2020","Shock","Preferred first-line vasopressor in septic shock?",["Dopamine","Norepinephrine","Dobutamine","Phenylephrine"],1,"Norepinephrine is the preferred first-line vasopressor."],
+["2019","Carbamazepine","A classic adverse effect of carbamazepine is:",["Gingival hyperplasia","Hyponatremia","Pulmonary fibrosis","Hypertrichosis"],1,"Carbamazepine can cause SIADH and hyponatremia."],
+["2019","Valproate","Valproate is particularly associated with:",["Hepatotoxicity","Gingival hyperplasia","Ototoxicity","Pulmonary fibrosis"],0,"Valproate can cause hepatotoxicity and pancreatitis."],
+["2018","NTEP","Rapid molecular detection of TB and rifampicin resistance:",["ZN stain","CBNAAT/Truenat","Mantoux only","ESR"],1,"NAAT platforms rapidly detect MTB and can identify rifampicin resistance."],
+["2018","PPH causes","Most common cause of primary PPH:",["Tone/uterine atony","Trauma","Tissue","Thrombin"],0,"Uterine atony (tone) is the commonest cause."],
+["2017","CTG patterns","Early decelerations are caused by:",["Cord compression","Head compression","Uteroplacental insufficiency","Maternal fever"],1,"Early decelerations mirror contractions and are due to fetal head compression."],
+["2016","Diuretics","Which diuretic acts on the thick ascending limb?",["Furosemide","HCTZ","Spironolactone","Acetazolamide"],0,"Loop diuretics inhibit NKCC2 in the thick ascending limb."],
+["2015","Glaucoma","Classic finding in chronic open-angle glaucoma:",["Optic disc cupping","Cherry-red spot","KF ring","Papilledema"],0,"Progressive glaucomatous optic neuropathy causes increased cup-to-disc ratio."]
+].map(x=>({y:x[0],t:x[1],q:x[2],o:x[3],a:x[4],e:x[5]}));
+
+const cards={
+"Brachial plexus":[["Roots","C5–T1"],["Trunks","Upper C5-6 • Middle C7 • Lower C8-T1"],["Key memory","Erb = C5-6; Klumpke = C8-T1"]],
+"Duke criteria":[["Major","Typical positive blood culture • Echo evidence • New regurgitation"],["Minor","Predisposition • Fever • Vascular phenomena • Immunologic phenomena • Microbiology not major"],["Memory","Osler = immune; Janeway = vascular"]],
+"Baumann angle":[["Use","Supracondylar humerus fracture"],["Meaning","Assesses coronal alignment"],["Memory","Altered angle → cubitus varus/valgus risk"]],
+"Brodie abscess":[["Condition","Subacute osteomyelitis"],["Common organism","Staphylococcus aureus"],["X-ray clue","Localized lytic lesion with surrounding sclerosis"]],
+"Shock":[["Base deficit","Reflects metabolic acidosis"],["Trend","Rising deficit suggests worsening tissue hypoperfusion"],["First-line septic shock","Norepinephrine after adequate fluids"]],
+"Phenytoin":[["MOA","Use-dependent voltage-gated Na+ channel blockade"],["Adverse effects","Gingival hyperplasia • Hirsutism • Ataxia • Nystagmus"],["Memory","Fetal hydantoin syndrome"]],
+"Infective endocarditis":[["Osler nodes","Painful • immunologic"],["Janeway lesions","Painless • vascular"],["Roth spots","Retinal hemorrhages with pale center"]],
+"PPH causes":[["4 Ts","Tone • Trauma • Tissue • Thrombin"],["Commonest","Tone = uterine atony"],["Memory","4 Ts = causes of primary PPH"]]
+};
+
+let S=JSON.parse(localStorage.getItem("neetpg100v2")||"{}");
+S.status=S.status&&S.status.length===100?S.status:Array(100).fill("");
+S.stats=S.stats||{};S.attempt=S.attempt||0;S.correct=S.correct||0;S.interval=S.interval||2;
+let quiz=[],qi=0,answered=false,flashIndex=0,flipped=false;
+
+function save(){localStorage.setItem("neetpg100v2",JSON.stringify(S));renderAll()}
+function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));let b=document.getElementById("n-"+id);if(b)b.classList.add("active")}
+function setStatus(i,v){S.status[i]=S.status[i]===v?"":v;save()}
+function renderAll(){
+let d=S.status.filter(x=>x==="done").length,w=S.status.filter(x=>x==="weak").length,wr=S.status.filter(x=>x==="wrong").length;
+count.textContent=d+"/100";bar.style.width=d+"%";wd.textContent=w;ww.textContent=wr;acc.textContent=S.attempt?Math.round(S.correct/S.attempt*100)+"%":"0%";
+pa.textContent=S.attempt;pc.textContent=S.correct;pacc.textContent=S.attempt?Math.round(S.correct/S.attempt*100)+"%":"0%";
+topicList.innerHTML=topics.map((t,i)=>`<div class="topic"><b>${i+1}. ${t}</b><div class="actions"><button class="${S.status[i]==="done"?"ok":""}" onclick="setStatus(${i},'done')">✓ Done</button><button class="${S.status[i]==="weak"?"bad":""}" onclick="setStatus(${i},'weak')">Weak</button><button class="${S.status[i]==="rev"?"rev":""}" onclick="setStatus(${i},'rev')">Revise</button><button class="${S.status[i]==="wrong"?"blue":""}" onclick="setStatus(${i},'wrong')">Wrong</button></div></div>`).join("");
+renderTopicsForPyq();renderFlashTopics();updateDue();
+}
+function clearTopics(){if(confirm("Clear all topic statuses?")){S.status=Array(100).fill("");save()}}
+function renderTopicsForPyq(){let q=(search?.value||"").toLowerCase();pyqTopics.innerHTML=topics.map((t,i)=>({t,i})).filter(x=>x.t.toLowerCase().includes(q)).map(x=>{let n=qs.filter(z=>sameTopic(z.t,x.t)).length;return `<div class="topic"><div class="row"><b>${x.t}</b><span class="muted">${n} tagged</span></div><div class="actions"><button class="primary" onclick="startTopic(${x.i})">Solve ${n? n+" PYQ":"available PYQs"}</button></div></div>`}).join("")}
+function norm(s){return s.toLowerCase().replace(/[^a-z0-9]/g,"")}
+function sameTopic(qt,tt){let a=norm(qt),b=norm(tt);return a===b||a.includes(b)||b.includes(a)||(["shock","infectiveendocarditis"].includes(b)&&a.includes(b))}
+function startTopic(i){let pool=qs.filter(x=>sameTopic(x.t,topics[i]));if(!pool.length){alert("No tagged PYQs are currently available for this topic. I won't show unrelated questions.");return}quiz=pool;qi=0;answered=false;show("quiz");drawQ("PYQ • "+topics[i])}
+function startYearQuiz(){let y=year.value;let pool=y==="mixed"?qs:qs.filter(x=>x.y===y);if(!pool.length){alert("No PYQs in this bank for that year yet.");return}quiz=pool.slice().sort(()=>Math.random()-.5).slice(0,+num.value);qi=0;answered=false;show("quiz");drawQ("PYQ "+y)}
+function startQuiz(){quiz=qs.slice().sort(()=>Math.random()-.5).slice(0,10);qi=0;answered=false;show("quiz");drawQ("Mixed MCQs")}
+function drawQ(title){let x=quiz[qi];qtitle.textContent=title;qcount.textContent=(qi+1)+"/"+quiz.length;qbar.style.width=(qi/quiz.length*100)+"%";qbox.innerHTML=`<span class="tag">${x.y} • ${x.t}</span><div style="font-size:17px;font-weight:750;line-height:1.4;margin:12px 0">${x.q}</div>${x.o.map((o,i)=>`<button class="option" onclick="answer(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join("")}<div id="exp"></div>`}
+function answer(i){if(answered)return;answered=true;let x=quiz[qi],key=x.q;S.attempt++;if(i===x.a){S.correct++;record(key,true)}else record(key,false);save();document.querySelectorAll(".option").forEach((b,j)=>{if(j===x.a)b.classList.add("correct");if(j===i&&i!==x.a)b.classList.add("wrong")});exp.innerHTML=`<div class="explain"><b>${i===x.a?"✅ Correct":"❌ Incorrect"}</b><br>${x.e}</div><button class="primary" style="width:100%;margin-top:10px" onclick="nextQ()">${qi+1<quiz.length?"Next":"Finish"}</button>`}
+function record(key,ok){let r=S.stats[key]||{correct:0,wrong:0,streak:0,due:0};if(ok){r.correct++;r.streak++;if(r.streak>=2)r.due=0}else{r.wrong++;r.streak=0;r.due=Date.now()+S.interval*86400000}S.stats[key]=r}
+function nextQ(){qi++;if(qi>=quiz.length){show("progress");renderAll()}else{answered=false;drawQ(qtitle.textContent)}}
+function isDue(q){let r=S.stats[q.q];return r&&r.due&&Date.now()>=r.due&&r.streak<2}
+function startReview(){let pool=qs.filter(isDue);if(!pool.length){alert("No wrong questions are due today. 🎉");return}quiz=pool;qi=0;answered=false;show("quiz");drawQ("Automatic 2-day review")}
+function updateDue(){let n=qs.filter(isDue).length;reviewInfo.textContent=n?`${n} wrong question${n>1?"s":""} due for review.`:"No questions due. Wrong questions return automatically after the selected interval."}
+function customModule(){let f=filter.value,n=+size.value,pool;if(f==="due")pool=qs.filter(isDue);else if(f==="all")pool=qs;else{let wanted=topics.map((t,i)=>i).filter(i=>f==="unfinished"?!S.status[i]:S.status[i]===f);pool=qs.filter(q=>wanted.some(i=>sameTopic(q.t,topics[i])));if(!pool.length)pool=qs.filter(q=>f==="wrong"?S.stats[q.q]?.wrong:!S.stats[q.q]?.correct)}if(!pool.length){alert("No questions currently match this module.");return}quiz=pool.sort(()=>Math.random()-.5).slice(0,n);qi=0;answered=false;show("quiz");drawQ("Custom module")}
+function renderFlashTopics(){flashTopic.innerHTML=Object.keys(cards).map(t=>`<option>${t}</option>`).join("");renderFlash()}
+function renderFlash(){let t=flashTopic.value||Object.keys(cards)[0],arr=cards[t]||[];if(!arr.length){flashCard.innerHTML="<h2>No flashcards yet</h2>";return}let c=arr[flashIndex%arr.length];flashCard.innerHTML=flipped?`<small>${c[0]}</small><h2>${c[1]}</h2><p>Tap to flip back</p>`:`<small>${t}</small><h2>${c[0]}</h2><p>Tap to reveal</p>`;visual.textContent=visualTopic(t)}
+function flipFlash(){flipped=!flipped;renderFlash()}function nextFlash(){let t=flashTopic.value||Object.keys(cards)[0];flashIndex=(flashIndex+1)%(cards[t].length);flipped=false;renderFlash()}function prevFlash(){let t=flashTopic.value||Object.keys(cards)[0];flashIndex=(flashIndex-1+cards[t].length)%cards[t].length;flipped=false;renderFlash()}
+function visualTopic(t){let v={"Brachial plexus":"Visual: roots → trunks → divisions → cords → terminal branches diagram recommended.","Baumann angle":"Visual: AP elbow X-ray showing Baumann angle / carrying-angle relationship.","Brodie abscess":"Visual: X-ray/MRI showing metaphyseal lytic lesion with surrounding sclerosis.","Duke criteria":"Visual: IE peripheral signs comparison — Osler nodes vs Janeway lesions.","Shock":"Visual: shock classification table / lactate-base-deficit trend.","Phenytoin":"Visual: voltage-gated Na+ channel action diagram."};return v[t]||"Visual aid placeholder — add a verified diagram/image for this topic when needed."}
+function setIntervalDays(){S.interval=+interval.value;save()}
+interval.value=S.interval;renderAll();
+</script>
+</body></html>
