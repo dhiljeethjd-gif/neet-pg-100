@@ -25,6 +25,22 @@
 
 <main id="pyq" class="screen content">
 <div class="card"><b>PYQ Practice</b><p class="muted">Select a topic first. Only questions tagged to that topic will appear.</p><input id="search" placeholder="Search topic..." oninput="renderTopicsForPyq()"><div id="pyqTopics"></div></div>
+<div class="card">
+<b>PYQ YEAR</b>
+<div class="actions">
+<button class="primary" onclick="year.value='2025';startYearQuiz()">2025</button>
+<button onclick="year.value='2024';startYearQuiz()">2024</button>
+<button onclick="year.value='2023';startYearQuiz()">2023</button>
+<button onclick="year.value='2022';startYearQuiz()">2022</button>
+<button onclick="year.value='2021';startYearQuiz()">2021</button>
+<button onclick="year.value='2020';startYearQuiz()">2020</button>
+<button onclick="year.value='2019';startYearQuiz()">2019</button>
+<button onclick="year.value='2018';startYearQuiz()">2018</button>
+<button onclick="year.value='2017';startYearQuiz()">2017</button>
+<button onclick="year.value='2016';startYearQuiz()">2016</button>
+<button onclick="year.value='2015';startYearQuiz()">2015</button>
+</div>
+</div>
 <div class="card"><div class="grid"><select id="year"><option value="mixed">All years</option><option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option><option>2020</option><option>2019</option><option>2018</option><option>2017</option><option>2016</option><option>2015</option></select><select id="num"><option>10</option><option>20</option><option>30</option></select></div><button class="primary" style="width:100%;margin-top:8px" onclick="startYearQuiz()">Solve selected year</button></div>
 </main>
 
