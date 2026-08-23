@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="NEET PG 100">
+<title>NEET PG 100</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Arial,sans-serif;background:#f4f6f8;color:#111827}
+.app{max-width:520px;margin:auto;min-height:100vh;padding-bottom:88px}.header{padding:22px 20px 14px;background:#111827;color:white}
+.header h1{margin:0;font-size:28px}.header p{margin:5px 0 0;color:#cbd5e1;font-size:14px}
+.content{padding:16px}.card{background:white;border-radius:18px;padding:17px;margin-bottom:14px;box-shadow:0 2px 10px #0000000a}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:#f8fafc;border-radius:14px;padding:12px}.stat b{font-size:21px;display:block}.stat span{font-size:11px;color:#64748b}
+.progress{height:10px;background:#e5e7eb;border-radius:10px;overflow:hidden;margin:12px 0}.bar{height:100%;background:#111827;width:0}
+button{border:0;border-radius:12px;padding:11px 14px;font-weight:700;font-size:14px;cursor:pointer}
+.primary{background:#111827;color:white}.ghost{background:#eef2f7;color:#111827}.row{display:flex;gap:8px;align-items:center;justify-content:space-between}
+.topic{padding:13px 0;border-bottom:1px solid #eef2f7}.topic:last-child{border-bottom:0}.topic b{font-size:14px}.tag{font-size:10px;color:#64748b;margin-top:4px}
+.actions{display:flex;gap:5px;margin-top:8px}.actions button{font-size:11px;padding:7px 9px}.done{background:#dcfce7}.weak{background:#fee2e2}.rev{background:#fef3c7}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e7eb;display:flex;justify-content:center;z-index:5}.nav button{background:white;border-radius:0;flex:1;max-width:520px;padding:14px 4px;color:#64748b}.nav button.active{color:#111827;font-weight:800}
+.screen{display:none}.screen.active{display:block}.muted{color:#64748b;font-size:13px}.big{font-size:34px;font-weight:800}
+input{width:100%;padding:12px;border:1px solid #dbe1e8;border-radius:12px;font-size:14px}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header"><h1>NEET PG 100</h1><p>One day. 100 high-yield topics. Keep moving.</p></header>
+
+<main id="home" class="screen active content">
+<div class="card">
+<div class="row"><div><div class="muted">Today's progress</div><div class="big" id="homeCount">0/100</div></div><button class="primary" onclick="show('topics')">Start</button></div>
+<div class="progress"><div class="bar" id="homeBar"></div></div>
+<div class="stats"><div class="stat"><b id="homeDone">0</b><span>Completed</span></div><div class="stat"><b id="homeWeak">0</b><span>Weak</span></div><div class="stat"><b id="homeRev">0</b><span>Revise</span></div></div>
+</div>
+<div class="card"><div class="row"><b>Study timer</b><span class="muted" id="timer">00:00:00</span></div><button class="primary" style="margin-top:12px;width:100%" id="timerBtn" onclick="toggleTimer()">Start studying</button></div>
+<div class="card"><b>Quick note</b><p class="muted">Finish today's list before adding more. Weak topics come back in Revision.</p></div>
+</main>
+
+<main id="topics" class="screen content">
+<div class="card"><div class="row"><div><b>Today's 100</b><div class="muted">Tap a status after revising</div></div><button class="ghost" onclick="resetDay()">Reset</button></div></div>
+<div class="card" id="topicList"></div>
+</main>
+
+<main id="pyq" class="screen content">
+<div class="card"><b>PYQ Tracker</b><p class="muted">Quickly record your daily PYQ work.</p>
+<input id="pyqInput" type="number" min="0" placeholder="Questions completed today">
+<button class="primary" style="margin-top:10px;width:100%" onclick="savePyq()">Save PYQs</button></div>
+<div class="card"><div class="stats"><div class="stat"><b id="pyqTotal">0</b><span>Total PYQs</span></div><div class="stat"><b id="pyqDays">0</b><span>Days logged</span></div><div class="stat"><b id="pyqAvg">0</b><span>Daily avg</span></div></div></div>
+</main>
+
+<main id="progress" class="screen content">
+<div class="card"><b>Progress</b><p class="muted">Your current study snapshot.</p><div class="stats">
+<div class="stat"><b id="pDone">0</b><span>Topics done</span></div>
+<div class="stat"><b id="pWeak">0</b><span>Weak topics</span></div>
+<div class="stat"><b id="pPyq">0</b><span>PYQs</span></div>
+</div></div>
+<div class="card"><b>Rule for today</b><p class="muted">Don't chase perfection. Complete the high-yield list, mark weak areas, and revisit them.</p></div>
+</main>
+
+<nav class="nav">
+<button onclick="show('home')" id="n-home">🏠<br>Home</button>
+<button onclick="show('topics')" id="n-topics">🎯<br>100 Topics</button>
+<button onclick="show('pyq')" id="n-pyq">📝<br>PYQ</button>
+<button onclick="show('progress')" id="n-progress">📊<br>Progress</button>
+</nav>
+</div>
+
+<script>
+const topics=[
+"Anatomy: Brachial plexus","Anatomy: Cavernous sinus","Anatomy: Facial nerve","Physiology: Cardiac cycle","Physiology: Starling forces",
+"Biochemistry: Rate-limiting enzymes","Pathology: Apoptosis","Pathology: Shock","Pharmacology: Alpha blockers","Pharmacology: Adrenergic receptors",
+"Microbiology: Staph aureus","Microbiology: Strep pyogenes","Medicine: Duke criteria","Medicine: ECG basics","Medicine: Acid-base disorders",
+"Surgery: Breast cancer staging","Surgery: Shock management","OBG: PPH causes","OBG: CTG patterns","Pediatrics: Neonatal resuscitation",
+"Orthopedics: Baumann angle","Orthopedics: Brodie abscess","Dermatology: Erythema multiforme","Anesthesia: Airway basics","Radiology: Chest X-ray approach",
+"PSM: NTEP","PSM: Screening tests","ENT: Hearing tests","Ophthalmology: Glaucoma","Psychiatry: Antipsychotic adverse effects",
+"Pharma: Phenytoin","Pharma: Carbamazepine","Pharma: Valproate","Medicine: Infective endocarditis","Medicine: Hypertension",
+"Surgery: Thyroid nodules","Surgery: Hernia basics","OBG: Ectopic pregnancy","OBG: Preeclampsia","Pediatrics: Developmental milestones",
+"Anatomy: Portal-systemic anastomosis","Physiology: Renal clearance","Biochemistry: Vitamins","Pathology: Nephrotic syndrome","Microbiology: TB diagnosis",
+"Medicine: AKI","Medicine: CKD","Surgery: Acute abdomen","OBG: Cervical cancer","PSM: Epidemiological measures",
+"ENT: CSOM","Ophthalmology: Cataract","Dermatology: Psoriasis","Orthopedics: Fracture healing","Anesthesia: Spinal anesthesia",
+"Radiology: CT head basics","Psychiatry: Depression","Pharmacology: Autonomic drugs","Pathology: Inflammation","Microbiology: HIV basics",
+"Medicine: Stroke","Medicine: Seizure drugs","Surgery: Colorectal cancer","OBG: Endometrial cancer","Pediatrics: Congenital heart disease",
+"Anatomy: Inguinal canal","Physiology: Respiratory volumes","Biochemistry: Urea cycle","Pathology: Breast lesions","Microbiology: Hepatitis viruses",
+"Medicine: COPD","Medicine: Asthma","Surgery: Burns","OBG: Fibroid uterus","PSM: Vaccines",
+"ENT: Vertigo","Ophthalmology: Diabetic retinopathy","Dermatology: STIs","Orthopedics: Osteomyelitis","Anesthesia: Local anesthetics",
+"Radiology: Bone lesions","Psychiatry: Bipolar disorder","Pharmacology: Diuretics","Pathology: Leukemia","Microbiology: Malaria",
+"Medicine: Liver failure","Medicine: Rheumatology antibodies","Surgery: Pancreatitis","OBG: Placenta previa","Pediatrics: Immunization",
+"PSM: Biostatistics","Anatomy: Cranial nerves","Physiology: Endocrine axes","Pathology: Lymphoma","Microbiology: Dengue",
+"Medicine: Diabetes","Surgery: Intestinal obstruction","OBG: Menstrual disorders","Orthopedics: Nerve injuries","Final: Revise marked weak topics"
+];
+let state=JSON.parse(localStorage.getItem('neetpg100')||'{}');
+state.status=state.status||Array(100).fill('');
+state.pyqs=state.pyqs||[];
+let seconds=0,timerOn=false,interval=null;
+function save(){localStorage.setItem('neetpg100',JSON.stringify(state));render();}
+function setStatus(i,s){state.status[i]=s;save();}
+function render(){
+let done=state.status.filter(x=>x==='done').length,weak=state.status.filter(x=>x==='weak').length,rev=state.status.filter(x=>x==='rev').length;
+document.getElementById('homeCount').textContent=`${done}/100`;document.getElementById('homeDone').textContent=done;document.getElementById('homeWeak').textContent=weak;document.getElementById('homeRev').textContent=rev;document.getElementById('homeBar').style.width=done+'%';
+document.getElementById('pDone').textContent=done;document.getElementById('pWeak').textContent=weak;document.getElementById('pPyq').textContent=state.pyqs.reduce((a,b)=>a+b,0);
+document.getElementById('pyqTotal').textContent=state.pyqs.reduce((a,b)=>a+b,0);document.getElementById('pyqDays').textContent=state.pyqs.length;document.getElementById('pyqAvg').textContent=state.pyqs.length?Math.round(state.pyqs.reduce((a,b)=>a+b,0)/state.pyqs.length):0;
+document.getElementById('topicList').innerHTML=topics.map((t,i)=>`<div class="topic"><b>${i+1}. ${t}</b><div class="actions"><button class="${state.status[i]==='done'?'done':''}" onclick="setStatus(${i},'done')">✓ Done</button><button class="${state.status[i]==='weak'?'weak':''}" onclick="setStatus(${i},'weak')">Weak</button><button class="${state.status[i]==='rev'?'rev':''}" onclick="setStatus(${i},'rev')">Revise</button></div></div>`).join('');
+}
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));document.getElementById('n-'+id).classList.add('active');}
+function resetDay(){if(confirm('Reset all topic statuses?')){state.status=Array(100).fill('');save();}}
+function savePyq(){let n=parseInt(document.getElementById('pyqInput').value||0);if(n>0){state.pyqs.push(n);document.getElementById('pyqInput').value='';save();}}
+function toggleTimer(){timerOn=!timerOn;document.getElementById('timerBtn').textContent=timerOn?'Pause studying':'Start studying';if(timerOn){interval=setInterval(()=>{seconds++;let h=String(Math.floor(seconds/3600)).padStart(2,'0'),m=String(Math.floor(seconds%3600/60)).padStart(2,'0'),s=String(seconds%60).padStart(2,'0');document.getElementById('timer').textContent=`${h}:${m}:${s}`},1000)}else clearInterval(interval)}
+render();document.getElementById('n-home').classList.add('active');
+</script>
+</body>
+</html>
